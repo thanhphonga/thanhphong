@@ -1,251 +1,97 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#090711" />
-  <meta name="description" content="Profile cá nhân của Thanh Phong." />
-  <title>THANH PHONG — Personal Profile</title>
-  <style>
-    :root {
-      --bg: #090711;
-      --panel: rgba(20, 16, 34, .82);
-      --purple: #a855f7;
-      --pink: #ec4899;
-      --text: #f7f3ff;
-      --muted: #aaa2bd;
-      --line: rgba(192, 132, 252, .22);
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(ellipse at 18% 15%, rgba(126, 34, 206, .20), transparent 35%),
-        radial-gradient(ellipse at 85% 80%, rgba(219, 39, 119, .12), transparent 32%),
-        var(--bg);
-      display: grid;
-      place-items: center;
-      padding: 28px 16px;
-      overflow-x: hidden;
-    }
-    #particles {
-      position: fixed; inset: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: -1; opacity: .65;
-    }
-    .glow-orb {
-      position: fixed; width: 260px; height: 260px; border-radius: 50%;
-      filter: blur(90px); opacity: .20; pointer-events: none; z-index: -1;
-      animation: drift 10s ease-in-out infinite alternate;
-    }
-    .orb-one { background: #9333ea; top: 5%; left: -90px; }
-    .orb-two { background: #db2777; bottom: 0; right: -90px; animation-delay: -4s; }
-    .profile-card {
-      width: min(100%, 430px);
-      position: relative;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 30px;
-      padding: 28px;
-      background: linear-gradient(145deg, rgba(27, 20, 45, .94), rgba(12, 10, 22, .96));
-      box-shadow: 0 25px 90px rgba(0, 0, 0, .48), 0 0 42px rgba(168, 85, 247, .12), inset 0 1px 0 rgba(255,255,255,.06);
-      animation: appear .8s cubic-bezier(.2,.8,.2,1) both;
-      isolation: isolate;
-    }
-    .profile-card::before {
-      content: ""; position: absolute; inset: -1px; z-index: -1; border-radius: inherit;
-      background: conic-gradient(from 0deg, transparent 0 65%, rgba(168,85,247,.45), transparent 78%);
-      animation: rotate 8s linear infinite; opacity: .5;
-    }
-    .topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-    .brand { font-size: .72rem; letter-spacing: .22em; color: #d8b4fe; font-weight: 800; }
-    .status {
-      display: inline-flex; align-items: center; gap: 7px;
-      border: 1px solid rgba(74,222,128,.25); color: #86efac;
-      border-radius: 999px; padding: 7px 10px; font-size: .68rem; white-space: nowrap;
-      background: rgba(34,197,94,.06);
-    }
-    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 10px #4ade80; }
-    .avatar-wrap { display: grid; place-items: center; margin: 30px 0 22px; }
-    .avatar-ring {
-      width: 126px; height: 126px; padding: 4px; border-radius: 50%;
-      background: conic-gradient(from 0deg, var(--purple), #f0abfc, var(--pink), var(--purple));
-      box-shadow: 0 0 25px rgba(168,85,247,.32);
-      animation: rotate 9s linear infinite;
-    }
-    .avatar {
-      width: 100%; height: 100%; border-radius: 50%; display: grid; place-items: center;
-      background: radial-gradient(circle at 30% 20%, #3b245a, #110d1d 68%);
-      border: 4px solid #130e20; font-size: 2.5rem; font-weight: 900; letter-spacing: -.08em;
-      color: white; text-shadow: 0 0 18px rgba(216,180,254,.7);
-      animation: counter-rotate 9s linear infinite;
-    }
-    .eyebrow { text-align: center; font-size: .72rem; letter-spacing: .28em; color: #c084fc; font-weight: 800; }
-    h1 { text-align: center; margin: 10px 0 7px; font-size: clamp(2rem, 8vw, 2.55rem); line-height: 1.05; letter-spacing: .04em; }
-    .gradient-text {
-      background: linear-gradient(90deg, #fff, #d8b4fe 45%, #f0abfc);
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    .subtitle { text-align: center; color: var(--muted); margin: 0; font-size: .92rem; }
-    .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent); margin: 24px 0; }
-    .bio { color: #d0c8df; text-align: center; line-height: 1.75; font-size: .91rem; margin: 0; }
-    .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 18px; }
-    .chip { border: 1px solid rgba(192,132,252,.2); background: rgba(168,85,247,.08); color: #dfc7ff; padding: 7px 11px; border-radius: 999px; font-size: .75rem; }
-    .social-title { text-align: center; font-size: .72rem; letter-spacing: .2em; color: var(--muted); margin: 0 0 13px; font-weight: 700; }
-    .socials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
-    .social {
-      min-width: 0; text-decoration: none; color: var(--text); text-align: center;
-      border: 1px solid rgba(192,132,252,.2); background: rgba(255,255,255,.025);
-      border-radius: 14px; padding: 13px 5px; transition: transform .2s, border-color .2s, background .2s, box-shadow .2s;
-    }
-    .social:hover, .social:focus-visible {
-      transform: translateY(-4px); border-color: rgba(216,180,254,.75);
-      background: rgba(168,85,247,.13); box-shadow: 0 8px 24px rgba(168,85,247,.13); outline: none;
-    }
-    .social-icon { display: block; font-size: 1.1rem; margin-bottom: 7px; color: #d8b4fe; }
-    .social-name { display: block; font-size: .75rem; font-weight: 750; }
-    .social-handle { display: block; color: #9389a8; font-size: .62rem; margin-top: 4px; overflow-wrap: anywhere; }
-    .footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 24px; color: #766d89; font-size: .68rem; }
-    .footer span:last-child { color: #a78bfa; letter-spacing: .12em; }
-    .edit-note { text-align: center; margin: 17px 0 0; color: #726983; font-size: .68rem; line-height: 1.5; }
-    @keyframes appear { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    @keyframes rotate { to { transform: rotate(360deg); } }
-    @keyframes counter-rotate { to { transform: rotate(-360deg); } }
-    @keyframes drift { to { transform: translate(45px, -30px) scale(1.18); } }
-    @media (max-width: 380px) {
-      .profile-card { padding: 22px 18px; border-radius: 24px; }
-      .avatar-ring { width: 108px; height: 108px; }
-      .footer { flex-direction: column; text-align: center; }
-      .social { padding: 12px 3px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff0f7">
+<meta name="description" content="Góc nhỏ pastel của Thanh Phong.">
+<title>Thanh Phong ♡ — Little Corner</title>
+<style>
+:root{--pink:#f58ab6;--pink-dark:#b94f7f;--lilac:#c5a9f5;--ink:#503c54;--muted:#886e8c;--glass:rgba(255,248,252,.84)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font-family:"Trebuchet MS",system-ui,-apple-system,sans-serif;background:#fff5fa;overflow-x:hidden}
+#petals{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+.hero{min-height:720px;position:relative;display:flex;align-items:center;padding:105px max(5vw,24px) 65px;overflow:hidden;background:linear-gradient(90deg,rgba(28,17,31,.65),rgba(55,30,52,.28) 55%,rgba(31,19,36,.08)),url("avatar.webp") center 36%/cover no-repeat}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#fff4f9 0%,transparent 23%,transparent 80%,rgba(25,15,30,.22));pointer-events:none}
+.nav{position:absolute;z-index:2;top:22px;left:50%;transform:translateX(-50%);width:min(1180px,calc(100% - 40px));display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 15px;border:1px solid #ffffff8c;border-radius:999px;background:#fff4f6b8;backdrop-filter:blur(16px);box-shadow:0 8px 25px #3c17301a}
+.brand{font-weight:900;color:#a84e7c;white-space:nowrap}.navlinks{display:flex;align-items:center;gap:clamp(8px,2vw,25px)}.nav a{color:#77536e;text-decoration:none;font-size:.86rem;font-weight:700}.nav a:hover{color:#db6097}.moon{border:0;background:#fff;border-radius:50%;width:38px;height:38px;font-size:1.15rem;color:#bd6590;cursor:pointer}
+.hero-content{z-index:1;position:relative;width:min(1180px,100%);margin:0 auto;color:#fff;text-shadow:0 2px 16px #21132277}.hello{font-family:"Trebuchet MS",cursive;font-size:clamp(1.8rem,4vw,3rem);margin:0 0 8px}.hello span{color:#ffd6e8}
+h1{font-size:clamp(3rem,8vw,6.5rem);line-height:.98;letter-spacing:.02em;margin:0;color:#ffb7d5;-webkit-text-stroke:1px #fff;text-shadow:0 5px 0 #d86d9e,0 9px 25px #4a163b80}
+.tagline{font-size:clamp(1rem,2vw,1.2rem);line-height:1.7;margin:22px 0;max-width:480px}
+.socials{display:flex;flex-wrap:wrap;gap:10px}.pill{display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:#fff2f8;color:#a34e78;border:1px solid #fff;border-radius:999px;padding:11px 16px;font-size:.88rem;font-weight:800;box-shadow:0 5px 16px #34182c26;transition:.2s}.pill:hover{transform:translateY(-3px);background:#fff}
+main{position:relative;z-index:1;margin-top:-35px;padding:0 24px 40px}.container{max-width:1180px;margin:auto}.panel{background:var(--glass);border:1px solid #fff;border-radius:26px;box-shadow:0 12px 40px #d88ab62b;backdrop-filter:blur(14px)}
+.about{display:grid;grid-template-columns:minmax(220px,.8fr) 1.4fr;gap:28px;padding:28px;align-items:center}.avatar-frame{width:min(100%,330px);aspect-ratio:1;border-radius:50%;padding:7px;margin:auto;background:linear-gradient(135deg,#ff9bc5,#fff,#c6a8ff);box-shadow:0 0 0 4px #fff,0 0 28px #ee8dbb77;position:relative}.avatar-frame img{width:100%;height:100%;object-fit:cover;object-position:center 35%;border-radius:50%;border:3px solid white}.avatar-frame:after{content:"♡";position:absolute;right:0;bottom:12%;font-size:2rem;color:#ed77a8;text-shadow:0 2px #fff}
+.section-title{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 13px;color:#a94f7c}.section-title span{color:#f18cb8}.about p{line-height:1.75;margin:0 0 15px}.details{display:grid;gap:7px}.detail{padding:9px 12px;border-radius:12px;background:#fce8f1b8;font-size:.9rem}.detail b{margin-right:8px;color:#b85d88}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}.stat{padding:21px 18px;min-height:145px}.stat-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:#fff;font-size:1.5rem;box-shadow:0 4px 14px #dca3c733;margin-bottom:10px}.stat h3{margin:0 0 6px;font-size:1.05rem}.stat p{margin:0;color:var(--muted);font-size:.88rem;line-height:1.55}
+.projects{padding:25px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.section-head .section-title{margin:0}.view-all{background:#e985ad;color:white;text-decoration:none;padding:10px 15px;border-radius:999px;font-weight:800;font-size:.82rem}
+.project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.project{overflow:hidden;background:#fff9fc;border:1px solid #f9dbe9;border-radius:17px;transition:.22s}.project:hover{transform:translateY(-5px);box-shadow:0 12px 25px #d88ab62b}.project-visual{height:135px;display:grid;place-items:center;font-size:3.2rem;background:linear-gradient(135deg,#f6c9df,#d9d0ff)}.project:nth-child(2) .project-visual{background:linear-gradient(135deg,#ddd5ff,#ffcde2)}.project:nth-child(3) .project-visual{background:linear-gradient(135deg,#ffe3d7,#e4d8ff)}.project-body{padding:15px}.project h3{margin:0 0 7px;font-size:1rem}.project p{font-size:.87rem;line-height:1.55;color:var(--muted);margin:0 0 12px}.arrow{color:#c55d8e;font-size:1.3rem;text-align:right}
+.quote{margin-top:20px;padding:25px 30px;display:flex;align-items:center;gap:15px;color:#ad6488;font-size:clamp(1rem,2.4vw,1.3rem);font-style:italic;line-height:1.6}.quote-mark{font-size:3.2rem;line-height:1;color:#df91b5;font-weight:900}
+footer{text-align:center;padding:5px 20px 30px;color:#b17f9c;font-size:.82rem}
+.dark{--ink:#f8e9f1;--muted:#d0b5c8;--glass:rgba(44,29,48,.87);background:#201522;color:var(--ink)}.dark main{color:var(--ink)}.dark .panel{border-color:#6d4965}.dark .detail,.dark .project{background:#39263b;border-color:#68465e}.dark .detail{color:#f6dce9}.dark .project-visual{filter:saturate(.8)}.dark .nav{background:#302036c9;border-color:#74516c}.dark .nav a,.dark .brand{color:#ffd5e7}.dark .quote{color:#f0b6d0}.dark footer{color:#d6a8c1}
+@media(max-width:760px){.hero{min-height:680px;background-position:58% center;padding-top:110px;align-items:flex-end}.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(34,18,33,.72),transparent 88%)}.nav{width:calc(100% - 22px);top:11px;padding:8px 10px}.brand{font-size:.78rem}.navlinks{gap:9px}.nav a{font-size:.7rem}.navlinks a:nth-child(3),.navlinks a:nth-child(4){display:none}.moon{width:32px;height:32px}.hero-content{padding-bottom:15px}.about{grid-template-columns:1fr;padding:22px}.avatar-frame{width:205px}.stats{grid-template-columns:repeat(2,1fr);gap:10px}.stat{padding:16px;min-height:130px}.project-grid{grid-template-columns:1fr}.project{display:grid;grid-template-columns:115px 1fr}.project-visual{height:100%;min-height:140px;font-size:2.4rem}.project-body{padding:13px}.projects{padding:20px}.quote{padding:20px}.section-head{align-items:flex-start}.view-all{white-space:nowrap}}
+@media(max-width:390px){.navlinks{gap:7px}.navlinks a:nth-child(2){display:none}.brand{font-size:.72rem}.hero{min-height:620px}.pill{font-size:.8rem;padding:10px 12px}.project{grid-template-columns:95px 1fr}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
 </head>
 <body>
-  <canvas id="particles" aria-hidden="true"></canvas>
-  <div class="glow-orb orb-one" aria-hidden="true"></div>
-  <div class="glow-orb orb-two" aria-hidden="true"></div>
-
-  <main class="profile-card">
-    <div class="topline">
-      <span class="brand">PERSONAL PROFILE</span>
-      <span class="status"><span class="status-dot"></span> ONLINE VIBES</span>
+<canvas id="petals" aria-hidden="true"></canvas>
+<header class="hero" id="home">
+  <nav class="nav" aria-label="Điều hướng">
+    <a class="brand" href="#home">♡ PHONG'S CORNER</a>
+    <div class="navlinks"><a href="#home">⌂ Trang chủ</a><a href="#about">Giới thiệu</a><a href="#skills">Kỹ năng</a><a href="#projects">Dự án</a><a href="#contact">Liên hệ</a></div>
+    <button class="moon" id="theme" aria-label="Đổi giao diện" title="Đổi giao diện">☾</button>
+  </nav>
+  <div class="hero-content">
+    <p class="hello">♧ Hello!</p>
+    <h1>THANH PHONG ♡</h1>
+    <p class="tagline">Chỉ là một người bình thường<br>thích game, code và những thứ dễ thương ♡</p>
+    <div class="socials" id="contact">
+      <a class="pill" href="#" data-social="Discord">◈ Discord</a>
+      <a class="pill" href="#" data-social="Facebook">f Facebook</a>
+      <a class="pill" href="#" data-social="TikTok">♪ TikTok</a>
+      <a class="pill" href="#projects">🎮 Game</a>
     </div>
-
-    <div class="avatar-wrap">
-      <div class="avatar-ring">
-        <!-- Thay chữ TP bằng ảnh của bạn nếu muốn -->
-        <div class="avatar" aria-label="Avatar chữ TP">TP</div>
+  </div>
+</header>
+<main><div class="container">
+  <section class="panel about" id="about">
+    <div class="avatar-frame"><img src="avatar.webp" alt="Ảnh anime hoa anh đào được chọn làm avatar"></div>
+    <div>
+      <h2 class="section-title">🐱 Giới thiệu <span>♥</span></h2>
+      <p>Xin chào! Mình là <b>Thanh Phong</b>.<br>Hiện đang tìm hiểu về lập trình, game và nhiều thứ khác. Thích Minecraft, Discord bot, chỉnh PC và khám phá những điều mới. Đây là trang cá nhân nhỏ của mình để lưu lại thông tin và các dự án.</p>
+      <div class="details">
+        <div class="detail"><b>♡</b> Tuổi: thêm thông tin của bạn</div>
+        <div class="detail"><b>⌖</b> Việt Nam</div>
+        <div class="detail"><b>♥</b> Thích game, code, anime</div>
+        <div class="detail"><b>✿</b> Đang học và tìm hiểu thêm</div>
       </div>
     </div>
-
-    <div class="eyebrow">WELCOME TO MY SPACE</div>
-    <h1 class="gradient-text">THANH PHONG</h1>
-    <p class="subtitle">Gamer · Tech Lover · Always Exploring</p>
-
-    <div class="divider"></div>
-
-    <p class="bio">
-      Một góc nhỏ của Phong trên internet.<br />
-      Yêu công nghệ, thích khám phá và luôn tìm điều mới để trải nghiệm.
-    </p>
-
-    <div class="chips" aria-label="Sở thích">
-      <span class="chip">🎮 Gaming</span>
-      <span class="chip">💻 Technology</span>
-      <span class="chip">🌌 Night Owl</span>
+  </section>
+  <section class="stats" id="skills">
+    <article class="panel stat"><div class="stat-icon">🎮</div><h3>Game</h3><p>Minecraft, Valorant…</p></article>
+    <article class="panel stat"><div class="stat-icon">💻</div><h3>Code</h3><p>HTML · CSS · JS<br>Discord Bot</p></article>
+    <article class="panel stat"><div class="stat-icon">♡</div><h3>Sở thích</h3><p>Nghe nhạc<br>Xem anime<br>Tùy chỉnh PC</p></article>
+    <article class="panel stat"><div class="stat-icon">⭐</div><h3>Mục tiêu</h3><p>Phát triển bản thân<br>Học thêm lập trình<br>Làm dự án thú vị</p></article>
+  </section>
+  <section class="panel projects" id="projects">
+    <div class="section-head"><h2 class="section-title">📁 Dự án nổi bật <span>♥</span></h2><a class="view-all" href="#contact">Kết nối →</a></div>
+    <div class="project-grid">
+      <article class="project"><div class="project-visual">🌸🎮</div><div class="project-body"><h3>Minecraft Server</h3><p>Xây dựng và tùy chỉnh server với những plugin thú vị.</p><div class="arrow">→</div></div></article>
+      <article class="project"><div class="project-visual">🤖💬</div><div class="project-body"><h3>Discord Bot</h3><p>Tạo bot tiện ích, lệnh vui và hệ thống điểm.</p><div class="arrow">→</div></div></article>
+      <article class="project"><div class="project-visual">🎀💻</div><div class="project-body"><h3>Web Profile</h3><p>Trang cá nhân được làm bằng HTML, CSS và JavaScript.</p><div class="arrow">→</div></div></article>
     </div>
-
-    <div class="divider"></div>
-
-    <p class="social-title">CONNECT WITH ME</p>
-    <nav class="socials" aria-label="Mạng xã hội">
-      <!-- Thay # bằng link tài khoản thật của bạn -->
-      <a class="social" href="#" data-social="Facebook" aria-label="Facebook - cập nhật liên kết">
-        <span class="social-icon">f</span>
-        <span class="social-name">Facebook</span>
-        <span class="social-handle">@yourname</span>
-      </a>
-      <a class="social" href="#" data-social="TikTok" aria-label="TikTok - cập nhật liên kết">
-        <span class="social-icon">♪</span>
-        <span class="social-name">TikTok</span>
-        <span class="social-handle">@yourname</span>
-      </a>
-      <a class="social" href="#" data-social="Discord" aria-label="Discord - cập nhật liên kết">
-        <span class="social-icon">◈</span>
-        <span class="social-name">Discord</span>
-        <span class="social-handle">yourname</span>
-      </a>
-    </nav>
-
-    <div class="footer">
-      <span>© <span id="year"></span> THANH PHONG</span>
-      <span>STAY DIFFERENT ✦</span>
-    </div>
-    <p class="edit-note">Personal page · Made with a little purple energy</p>
-  </main>
-
-  <script>
-    // Tự cập nhật năm ở chân trang
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    // Nhắc khi bấm vào liên kết mạng xã hội chưa được thiết lập
-    document.querySelectorAll("[data-social]").forEach((link) => {
-      link.addEventListener("click", (event) => {
-        if (link.getAttribute("href") === "#") {
-          event.preventDefault();
-          alert("Bạn hãy thêm link " + link.dataset.social + " thật vào file index.html nhé!");
-        }
-      });
-    });
-
-    // Hạt sáng nền; tự điều chỉnh theo kích thước màn hình
-    const canvas = document.getElementById("particles");
-    const ctx = canvas.getContext("2d");
-    let particles = [];
-    let width = 0, height = 0;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    function resizeCanvas() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      canvas.style.width = width + "px";
-      canvas.style.height = height + "px";
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.min(65, Math.floor(width / 18));
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r: Math.random() * 1.7 + .35,
-        speed: Math.random() * .25 + .08,
-        alpha: Math.random() * .55 + .15
-      }));
-      drawParticles();
-    }
-    function drawParticles() {
-      ctx.clearRect(0, 0, width, height);
-      for (const p of particles) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(216, 180, 254, ${p.alpha})`;
-        ctx.fill();
-        if (!reduceMotion) {
-          p.y -= p.speed;
-          if (p.y < -4) { p.y = height + 4; p.x = Math.random() * width; }
-        }
-      }
-      if (!reduceMotion) requestAnimationFrame(drawParticles);
-    }
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-  </script>
+  </section>
+  <section class="panel quote"><span class="quote-mark">“</span><span>Chỉ cần cố gắng mỗi ngày một chút,<br>thì mình sẽ trở thành phiên bản tốt hơn của chính mình. ♡</span><span>🐱</span></section>
+</div></main>
+<footer>Made with ♡ by Thanh Phong · Stay soft, stay kind ✿</footer>
+<script>
+document.getElementById("theme").addEventListener("click",()=>{document.body.classList.toggle("dark");document.getElementById("theme").textContent=document.body.classList.contains("dark")?"☀":"☾";});
+document.querySelectorAll("[data-social]").forEach(a=>a.addEventListener("click",e=>{if(a.getAttribute("href")==="#"){e.preventDefault();alert("Thêm link "+a.dataset.social+" của bạn vào index.html nhé!");}}));
+const c=document.getElementById("petals"),x=c.getContext("2d");let w,h,petals=[];const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function resize(){const d=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;c.width=w*d;c.height=h*d;c.style.width=w+"px";c.style.height=h+"px";x.setTransform(d,0,0,d,0,0);petals=Array.from({length:Math.min(32,Math.floor(w/24))},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*5+3,vy:Math.random()*.7+.25,vx:Math.random()*.5-.25,rot:Math.random()*6,vr:Math.random()*.025-.012,alpha:Math.random()*.45+.18}));draw();}
+function draw(){x.clearRect(0,0,w,h);for(const p of petals){x.save();x.globalAlpha=p.alpha;x.translate(p.x,p.y);x.rotate(p.rot);x.fillStyle=Math.random()>.5?"#f4a2c4":"#d6bdf8";x.beginPath();x.ellipse(0,0,p.r*.65,p.r*1.35,0,0,Math.PI*2);x.fill();x.restore();if(!reduced){p.y+=p.vy;p.x+=p.vx;p.rot+=p.vr;if(p.y>h+15){p.y=-15;p.x=Math.random()*w;}}}if(!reduced)requestAnimationFrame(draw);}
+addEventListener("resize",resize);resize();
+</script>
 </body>
 </html>
